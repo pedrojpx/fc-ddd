@@ -1,15 +1,19 @@
 import Address from "./address";
 
 export default class Customer {
-    _id: string;
-    _name: string;
-    _address!: Address;
-    _active: boolean = false;
+    private _id: string;
+    private _name: string;
+    private _address!: Address;
+    private _active: boolean = false;
 
     constructor(id: string, name: string) {
         this._id = id;
         this._name = name;
         this.validate();
+    }
+
+    get name(): string {
+        return this._name
     }
 
     //diferently from a "get name", this denotes the intention for the function instead of simply "following protocol"
@@ -43,7 +47,11 @@ export default class Customer {
     }
 
     //the only way to change an address is to substitute the entire value object
-    set Address(address: Address) {
+    set address(address: Address) {
         this._address = address
+    }
+
+    isActive(): boolean {
+        return this._active
     }
 }

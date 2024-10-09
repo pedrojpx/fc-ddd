@@ -6,7 +6,7 @@ import Order from './entity/order'
 let customer = new Customer("123", "Pedro")
 const address = new Address("Rua", 2, "1234", "MG")
 
-customer.Address = address
+customer.address = address
 customer.activate()
 
 const item1 = new OrderItem("1", "name1", 10)
