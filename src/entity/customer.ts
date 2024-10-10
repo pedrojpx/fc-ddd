@@ -5,6 +5,7 @@ export default class Customer {
     private _name: string;
     private _address!: Address;
     private _active: boolean = false;
+    private _rewardPoints: number = 0;
 
     constructor(id: string, name: string) {
         this._id = id;
@@ -14,6 +15,14 @@ export default class Customer {
 
     get name(): string {
         return this._name
+    }
+
+    get rewardPoints(): number {
+        return this._rewardPoints
+    }
+
+    get id(): string {
+        return this._id
     }
 
     //diferently from a "get name", this denotes the intention for the function instead of simply "following protocol"
@@ -44,6 +53,10 @@ export default class Customer {
         if (this._id.length === 0) {
             throw new Error("Id is required")
         }
+
+        if (this.rewardPoints < 0) {
+            throw new Error("invalid reward points value")
+        }
     }
 
     //the only way to change an address is to substitute the entire value object
@@ -53,5 +66,10 @@ export default class Customer {
 
     isActive(): boolean {
         return this._active
+    }
+
+    addRewardPoints(points: number) {
+        this._rewardPoints += points
+        this.validate()
     }
 }
