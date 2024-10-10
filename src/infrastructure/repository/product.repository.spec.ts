@@ -1,4 +1,5 @@
 import { Sequelize } from "sequelize-typescript"
+import ProductModel from "../db/sequelize/model/product.model"
 
 describe("Product repository test", () => {
 
@@ -12,8 +13,11 @@ describe("Product repository test", () => {
             sync: {force: true} //criar tabelas e tal quando criar o banco
         })
         
-        afterEach(async() => {
-            await sequilize.close()
-        })
+        sequilize.addModels([ProductModel])
+        await sequilize.sync();
+    })
+    
+    afterEach(async() => {
+        await sequilize.close()
     })
 })
