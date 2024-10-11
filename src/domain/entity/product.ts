@@ -15,6 +15,10 @@ export default class Product {
         return this._name
     }
 
+    get id(): string {
+        return this._id
+    }
+
     get price(): number {
         return this._price
     }
