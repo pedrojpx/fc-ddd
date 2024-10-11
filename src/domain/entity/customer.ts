@@ -25,12 +25,24 @@ export default class Customer {
         return this._id
     }
 
+    get address(): Address {
+        return this._address
+    }
+
     //diferently from a "get name", this denotes the intention for the function instead of simply "following protocol"
     changeName(name: string) {
         if (this._name.length === 0) {
             throw new Error("Name is required")
         }
         this._name = name;
+        this.validate();
+    }
+    
+    changeAddress(address: Address) {
+        if (address === undefined) {
+            throw new Error("address is required to change address")
+        }
+        this._address = address;
         this.validate();
     }
 
