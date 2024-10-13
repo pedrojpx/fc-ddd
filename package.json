@@ -14,6 +14,7 @@
     "tsc": "tsc"
   },
   "dependencies": {
+    "@hatchifyjs/sequelize-create-with-associations": "^0.6.6",
     "@types/uuid": "^10.0.0",
     "reflect-metadata": "^0.2.2",
     "sequelize": "^6.37.4",

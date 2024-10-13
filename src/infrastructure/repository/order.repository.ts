@@ -1,4 +1,6 @@
+import { Sequelize } from "sequelize";
 import Order from "../../domain/entity/order";
+import OrderItem from "../../domain/entity/order_item";
 import OrderRepositoryInterface from "../../domain/repository/order-repository.interface";
 import OrderItemModel from "../db/sequelize/model/order-item.model";
 import OrderModel from "../db/sequelize/model/order.model";
@@ -26,7 +28,7 @@ export default class OrderRepository implements OrderRepositoryInterface{
     async find(id: string): Promise<Order> {
         let model
         try {
-            model = await OrderModel.findOne({ where: {id: id}, rejectOnEmpty: true})
+            model = await OrderModel.findOne({ where: {id: id}, rejectOnEmpty: true, include: [{model: OrderItemModel, as: 'items'}]})
         } catch (error) {
             throw new Error("Customer not found")
         }
@@ -34,15 +36,33 @@ export default class OrderRepository implements OrderRepositoryInterface{
     }
     
     async findAll(): Promise<Order[]> {
-        throw Error("not implemented")
-        
+        const models = await OrderModel.findAll({include: [{model: OrderItemModel, as: "items"}]})
+        return models.map((model) => this.modelToEntity(model))
     }
 
     private modelToEntity(model: OrderModel): Order {
-        throw Error("not implemented")
+        const items = model.items.map((model) => new OrderItem(model.id, model.name, model.price, model.product_id, model.quantity))
+        const order = new Order(model.id, model.customer_id, items)
+        return order
     }
     
     async update(entity: Order): Promise<void> {
-        throw Error("not implemented")
+        await OrderModel.update(
+            {
+                total: entity.total(),
+                items: entity.items.map((item) => ({
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    product_id: item.productId,
+                    quantity: item.quantity
+                }))
+            },
+            {
+                where: {
+                    id: entity.id
+                },
+            }
+        )
     }
 }
