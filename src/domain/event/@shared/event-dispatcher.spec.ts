@@ -47,6 +47,7 @@ describe("Domain events tests", () => {
 
         const eventDispatcher = new EventDispatcher()
         const eventHandler = new SendEmailWhenProductIsCreatedHandler()
+        const spyEventHandler = jest.spyOn(eventHandler, "handle") //jest will spy if "handle" method is called by eventHandler
 
         eventDispatcher.register("ProductCreatedEvent", eventHandler)
         expect(eventDispatcher.getEventHandlers["ProductCreatedEvent"][0]).toMatchObject(eventHandler) 
@@ -54,10 +55,13 @@ describe("Domain events tests", () => {
         const productCreatedEvent = new ProductCreatedEvent({
             name: "Product 1",
             description: "product description",
-            price: 10.0
+            price: 10.0,
+            email: "yourproductwascreated@mail.com"
         })
 
         eventDispatcher.notify(productCreatedEvent)
+
+        expect(spyEventHandler).toHaveBeenCalled()
     })
 
 })
