@@ -1,8 +1,13 @@
+import AddressChangedEvent from "../customer/address-changed.event"
+import CustomerCreatedEvent from "../customer/customer-created.event"
+import CustomerCreatedHandler2 from "../customer/handler/CustomerCreatedHandler2.handler"
+import CustomerCreatedHandler1 from "../customer/handler/CustomerCreatedHandler1.handler"
 import SendEmailWhenProductIsCreatedHandler from "../product/handler/send-email-product-is-created.handler"
 import ProductCreatedEvent from "../product/product-created.event"
 import EventDispatcher from "./event-dispatcher"
+import AddressChangedHandler from "../customer/handler/AddresChangedHandler.handler"
 
-describe("Domain events tests", () => {
+describe("Basic domain events tests", () => {
 
     it("should register an event handler", () => {
 
@@ -63,5 +68,44 @@ describe("Domain events tests", () => {
 
         expect(spyEventHandler).toHaveBeenCalled()
     })
+
+})
+
+describe("Domain events tests for customer aggregate", () => {
+    it("should call the appropriate handlers upon notification of customer created event", () => {
+        const dispatcher = new EventDispatcher()
+        const handler = new CustomerCreatedHandler1()
+        const spy = jest.spyOn(handler, "handle")
+        const handler2 = new CustomerCreatedHandler2()
+        const spy2 = jest.spyOn(handler2, "handle")
+
+        dispatcher.register("CustomerCreatedEvent", handler)
+        dispatcher.register("CustomerCreatedEvent", handler2)
+
+        const event = new CustomerCreatedEvent({})
+
+        dispatcher.notify(event)
+
+        expect(spy).toHaveBeenCalled()
+        expect(spy2).toHaveBeenCalled()
+    }) 
+
+    it("should call the appropriate handlers upon notification of address changed", () => {
+        const dispatcher = new EventDispatcher()
+        const handler = new AddressChangedHandler()
+        const spy = jest.spyOn(handler, "handle")
+
+        dispatcher.register("AddressChangedEvent", handler)
+
+        const event = new AddressChangedEvent({
+            customerId: "1",
+            customerName: "pedro",
+            newAddress: "rua nova, 99 - cidade nova"
+        })
+
+        dispatcher.notify(event)
+
+        expect(spy).toHaveBeenCalled()
+    }) 
 
 })
